@@ -45,5 +45,7 @@ process.on("unhandledRejection", (err) => {
 app.get('/', (req, res) => {
     res.send('Server is running!');
 });
+const cors = require("cors");
+app.use(cors()); // Allow all frontend requests
 
 

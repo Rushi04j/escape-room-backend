@@ -27,3 +27,5 @@ app.get('/', (req, res) => {
 
 // Export app for server.js
 module.exports = app;
+const cors = require("cors");
+app.use(cors()); // Allow all frontend requests
