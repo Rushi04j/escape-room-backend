@@ -6,7 +6,7 @@ const cors = require('cors');
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors());  // Allow frontend requests
 app.use(express.json());
 
 // Check if MONGO_URI is set
@@ -15,7 +15,7 @@ if (!process.env.MONGO_URI) {
     process.exit(1);
 }
 
-// Connect to MongoDB without deprecated options
+// Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('✅ MongoDB connected'))
     .catch(err => console.error('❌ MongoDB connection error:', err));
@@ -27,5 +27,3 @@ app.get('/', (req, res) => {
 
 // Export app for server.js
 module.exports = app;
-const cors = require("cors");
-app.use(cors()); // Allow all frontend requests
