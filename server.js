@@ -17,10 +17,11 @@ const app = express();
 
 // ✅ Proper CORS setup (Move it here before routes)
 app.use(cors({
-    origin: "https://escape-room-frontend-iota.vercel.app",
+    origin: ["https://escape-room-frontend-iota.vercel.app", "https://landingpage-hazel-mu.vercel.app"], // Allow both
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true
 }));
+
 
 // ✅ Middleware
 app.use(express.json());
