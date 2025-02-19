@@ -1,37 +1,56 @@
 const express = require('express');
-const User = require('../models/user');
-const generateGuestId = require('../utils/guestIdGenerator');
+const bcrypt = require('bcryptjs'); // For password hashing
+const User = require('../models/user'); // Ensure this model exists
 const router = express.Router();
 
-// Guest Signup Route
-router.post('/guest/signup', async (req, res) => {
+// ✅ SIGNUP Route (New User Registration)
+router.post('/signup', async (req, res) => {
     try {
-        // Generate a unique guest ID
-        const guestId = generateGuestId();
+        const { username, email, password } = req.body;
 
-        // Check if a guest user with the same ID already exists (unlikely but possible)
-        const existingGuest = await User.findOne({ guestId });
-        if (existingGuest) {
-            return res.status(409).json({ error: 'Guest ID already exists. Please try again.' });
+        // 🔹 Check if the user already exists
+        const existingUser = await User.findOne({ email });
+
+        if (existingUser) {
+            return res.status(400).json({ error: "User already exists. Please log in." });
         }
 
-        // Create a new guest user
-        const guestUser = new User({
-            guestId,
-            role: 'guest',
-        });
+        // 🔹 Hash the password before saving it
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Save the guest user to the database
-        await guestUser.save();
+        // 🔹 Create a new user and save it in MongoDB
+        const newUser = new User({ username, email, password: hashedPassword });
+        await newUser.save();
 
-        // Return the guest ID to the client
-        res.status(201).json({ 
-            message: 'Guest user created successfully',
-            guestId,
-        });
+        res.status(201).json({ message: "User registered successfully! Please log in." });
     } catch (err) {
-        console.error('Error creating guest user:', err);
-        res.status(500).json({ error: 'An error occurred while creating the guest user.' });
+        console.error("Signup error:", err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+// ✅ LOGIN Route (Existing User Login)
+router.post('/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        // 🔹 Find user by email
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(401).json({ error: "User not found. Please sign up first." });
+        }
+
+        // 🔹 Compare entered password with stored hashed password
+        const isMatch = await bcrypt.compare(password, user.password);
+
+        if (!isMatch) {
+            return res.status(401).json({ error: "Invalid credentials" });
+        }
+
+        res.json({ message: "Login successful!" });
+    } catch (err) {
+        console.error("Login error:", err);
+        res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
