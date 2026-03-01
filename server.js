@@ -17,7 +17,7 @@ const app = express();
 
 // ✅ Proper CORS setup (Move it here before routes)
 app.use(cors({
-    origin: ["https://escape-room-frontend-iota.vercel.app", "https://landingpage-hazel-mu.vercel.app"], // Allow both
+    origin: ["https://escape-room-frontend-iota.vercel.app", "https://landingpage-hazel-mu.vercel.app", "http://127.0.0.1:5500", "http://localhost:5500", "http://localhost:3000", "http://localhost:8080", "http://127.0.0.1:8080"], // Allow both live and local
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true
 }));
