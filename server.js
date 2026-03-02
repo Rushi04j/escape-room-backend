@@ -33,6 +33,7 @@ mongoose.connect(process.env.MONGO_URI)
 
 // ✅ Define Routes
 app.use("/api/auth", require("./routes/auth"));
+app.use("/api/game", require("./routes/game"));
 
 // ✅ Default route for testing
 app.get("/", (req, res) => {
